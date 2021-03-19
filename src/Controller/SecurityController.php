@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Form\RegisterType;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
@@ -43,10 +46,32 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/register", name="app_register")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @return Response
      */
-    public function register(): Response
+    public function register(Request  $request, UserPasswordEncoderInterface $encoder): Response
     {
-        return $this->render('security/register.html.twig');
+
+        $form = $this->createForm(RegisterType::class);
+        $form->handleRequest($request);
+        if ($request->isMethod('POST')){
+            if ($form->isSubmitted() && $form->isValid()){
+                $user = $form->getData();
+
+                $encoded = $encoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($encoded);
+                $this->getDoctrine()->getManager()->persist($user);
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', 'Votre compte a bien été créer, vous pouvez vous connecter');
+
+                return $this->redirectToRoute('app_login');
+
+            }
+        }
+
+        return $this->render('security/register.html.twig',['form' => $form->createView()]);
+        //TODO Changer le nom du bouton créer un compte
 
     }
 

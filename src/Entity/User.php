@@ -59,12 +59,12 @@ class User implements UserInterface
     private $imgProfile;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="userId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="user", orphanRemoval=true)
      */
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="userId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="user", orphanRemoval=true)
      */
     private $tricks;
 
@@ -75,6 +75,8 @@ class User implements UserInterface
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
+
+        $this->createdAt = new \DateTime();
     }
 
     /**

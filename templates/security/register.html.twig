@@ -1,10 +1,49 @@
 {% extends 'base.html.twig' %}
-{% block title %}
 
-{% endblock %}
+{% block title %}Créer un compte{% endblock %}
+
 {% block body %}
+    <div class="container">
+        <div class="row p-lg-5 justify-content-center">
+            <div class="col-lg-6 mb-6">
+                <div class="card h-100">
+                    {{ form_start(form) }}
+                        <h4 class="card-header">Créer un compte</h4>
+                        <div class="card-body">
+                        <div class="form-group">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            <small style="color: red">{{ form_errors(form.email) }}</small>
+                        </div>
+                            <div class="form-group">
+                                {{ form_label(form.username) }}
+                                {{ form_widget(form.username) }}
+                                <small style="color: red">{{ form_errors(form.username) }}</small>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.password.first) }}
+                                {{ form_widget(form.password.first) }}
+                                <small style="color: red">{{ form_errors(form.password.first) }}</small>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.password.second) }}
+                                {{ form_widget(form.password.second) }}
+                                <small style="color: red">{{ form_errors(form.password.second) }}</small>
+                            </div>
 
+
+
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary float-lg-right" type="submit">
+                                Sign in
+                            </button>
+                            <a href="{{ path('app_login') }}" class="btn btn-primary">Connexion</a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}
-
-
-
