@@ -3,15 +3,34 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email as ConstraintsEmail;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ForgotPasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('field_name');
+            ->add(
+                'email',
+                TextType::class,
+                [
+                    'attr' =>
+                        [
+                            'class' => 'form-control',
+                            'placeholder' => 'Email'
+                        ],
+                    'label' => 'Adresse Email',
+                    'constraints' => [
+                        new NotBlank(),
+                        new ConstraintsEmail()
+                    ]
+
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)

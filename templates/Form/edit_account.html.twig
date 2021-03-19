@@ -1,0 +1,27 @@
+{{ form_start(formEditAccount,{'attr': {'action': path('app_account')}})}}
+
+<!-- Form Group (current password)-->
+<div class="form-group">
+	{{ form_label(formEditAccount.email) }}
+	{{ form_widget(formEditAccount.email) }}
+	<small style="color:red">
+		<div class="form-error">
+			{{ form_errors(formEditAccount.email) }}
+		</div>
+	</small>
+</div>
+
+<!-- Form Group (confirm password)-->
+<div class="form-group">
+	{{form_label(formEditAccount.username)}}
+	{{form_widget(formEditAccount.username)}}
+	<small style="color:red">
+		<div class="form-error">
+			{{ form_errors(formEditAccount.username) }}
+
+		</div>
+	</small>
+</div>
+{{form_widget(formEditAccount._token)}}
+<button class="btn btn-primary" type="submit">Enregistrer</button>
+{{form_end(formEditAccount)}}
