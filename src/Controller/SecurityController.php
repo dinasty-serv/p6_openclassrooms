@@ -40,4 +40,40 @@ class SecurityController extends AbstractController
     {
         throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
+
+    /**
+     * @Route("/register", name="app_register")
+     */
+    public function register(): Response
+    {
+        return $this->render('security/register.html.twig');
+
+    }
+
+    /**
+     * @Route("/forgot-password", name="app_forgot_password")
+     */
+    public function forgotPassword(): Response
+    {
+        return $this->render('security/forgot_password.html.twig');
+
+    }
+
+    /**
+     * @Route("/reset-password", name="app_reset_password")
+     */
+    public function resetPassword(): Response
+    {
+        return $this->render('security/reset_password.html.twig');
+
+    }
+
+    /**
+     * @Route("/account", name="app_account")
+     */
+    public function editAccount(): Response
+    {
+        return $this->render('security/account.html.twig');
+
+    }
 }
