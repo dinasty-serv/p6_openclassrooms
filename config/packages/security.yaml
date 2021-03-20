@@ -18,6 +18,8 @@ security:
             anonymous: true
             lazy: true
             provider: app_user_provider
+            user_checker: App\Security\UserCheckerLogin
+
             guard:
                 authenticators:
                     - App\Security\AppAuthenticator

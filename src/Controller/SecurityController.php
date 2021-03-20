@@ -172,7 +172,6 @@ class SecurityController extends AbstractController
         $error = '';
         if (!empty($user)) {
             $form->handleRequest($request);
-
             if ($request->isMethod('POST')) {
                 if ($form->isSubmitted() && $form->isValid()) {
                     $data = $form->getData();
