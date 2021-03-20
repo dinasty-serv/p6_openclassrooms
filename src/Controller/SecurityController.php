@@ -55,9 +55,10 @@ class SecurityController extends AbstractController
      * @Route("/register", name="app_register")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
+     * @param Swift_Mailer $mailer
      * @return Response
      */
-    public function register(Request  $request, UserPasswordEncoderInterface $encoder): Response
+    public function register(Request  $request, UserPasswordEncoderInterface $encoder, Swift_Mailer $mailer): Response
     {
 
         $form = $this->createForm(RegisterType::class);
@@ -67,12 +68,29 @@ class SecurityController extends AbstractController
                 $user = $form->getData();
 
                 $encoded = $encoder->encodePassword($user, $user->getPassword());
+                $token = $this->generateToken();
+                $user->setResetToken($token);
                 $user->setPassword($encoded);
+
+                $message = (new Swift_Message('Activé votre compte ! | snowtricks'))
+                    ->setFrom('postmaster@snowtricks.fr', 'snowtricks')
+                    ->setTo($user->getEmail())
+                    ->setBody(
+                        $this->renderView(
+                            'email/activeAccount.html.twig',
+                            [
+                                'user' => $user,
+                                'token' =>$token
+                            ]
+                        ),
+                        'text/html'
+                    );
+
+                $mailer->send($message);
+                $this->addFlash('success', 'Votre compte a bien été créer, vous allez recevoire un email pour activé votre compte.');
                 $this->getDoctrine()->getManager()->persist($user);
                 $this->getDoctrine()->getManager()->flush();
-                $this->addFlash('success', 'Votre compte a bien été créer, vous pouvez vous connecter');
-
-                return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('app_home_page');
 
             }
         }
@@ -236,7 +254,26 @@ class SecurityController extends AbstractController
             ]
         );
     }
+     /**
+      * @Route("/account/validate/{token}", name="app_account_validate")
+      */
+    public function validateAccount(string $token):Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
+        if ($user && $user->getStatus() == false){
+            $user->setResetToken(null);
+            $user->setStatus(true);
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash('success','Votre compte a bien été activé, vous pouvez vous connecter');
+            return $this->redirectToRoute('app_login');
+        }else{
+            $this->addFlash('danger','Token invalide !');
+            return $this->redirectToRoute('app_login');
 
+        }
+    }
     private function generateToken(): string
     {
         //Generate a random string.

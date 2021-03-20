@@ -51,6 +51,11 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $imgProfile;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $status = false;
     /**
      * User constructor.
      */
@@ -106,7 +111,6 @@ class User implements UserInterface
 
         return array_unique($roles);
     }
-
     /**
      * @see UserInterface
      */
@@ -210,6 +214,18 @@ class User implements UserInterface
     public function setImgProfile(?string $imgProfile): self
     {
         $this->imgProfile = $imgProfile;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
