@@ -8,6 +8,7 @@ use App\Entity\Image;
 use App\Form\ImgType;
 use App\Form\TrickType;
 use App\Entity\Category;
+use App\Util\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,6 +58,35 @@ class TrickController extends AbstractController
         return $this->render('trick/view_all_tricks.html.twig',['tricks' => $tricks]);
     }
 
+    /**
+     * @Route("/trick/create", name="app_trick_create")
+     * @param Request $request
+     * @return Response
+     */
+    public function create(Request $request, Util $util, Uploader $uploader):Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(TrickType::class, null,['action' => 'create']);
+        $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()){
+                $trick = $form->getData();
+                $slug = $util->getSlug($trick->getName());
+                $trick->setSlug($slug);
+                $trick->setUser($this->getUser());
+                $media = $uploader->saveImage($form->get('imgDefault')->getData());
+                $trick->setImgDefault($media);
+                $em->persist($trick);
+                $media->setTrick($trick);
+                $em->flush();
+                $this->addFlash('success','Le trick a bien été ajouté');
+
+                return $this->redirectToRoute('app_trick_view',['slug' => $trick->getSlug()]);
+            }
+
+
+        return $this->render('trick/create.html.twig',['form' =>$form->createView()]);
+
+    }
     /**
      * @Route("/trick/edit/{id}/", name="app_trick_edit", requirements={"id"="\d+"})
      * @param Trick $trick
@@ -129,7 +159,7 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
         }
 
-        return $this->render('module/form_edit_media_une.html.twig', ['form' => $form->createView(), 'id' => $trick->getId()]);
+        return $this->render('module/form_edit_media_une.html.twig', ['form' => $form->createView(), 'id' => $trick->getId(), 'route' => 'app_trick_edit_medias_une']);
 
     }
 

@@ -1,7 +1,7 @@
 
 
 <div class="row p-lg-5 justify-content-center">
-            {{ form_start(form, {'attr': {'action': path('app_trick_edit_medias_une',{'id': id})}})}}
+            {{ form_start(form, {'attr': {'action': path(route,{'id': id})}})}}
                 <div class="card-body">
                     <div class="form-group">
                         {{ form_label(form.name)}}
