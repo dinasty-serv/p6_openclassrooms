@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="row p-5 view_trick_header">
+            {% if trick.imgDefault != null %}
+                <a href="#" class="btn" name="Editer" onclick="changeMediaUne('{{ path('app_trick_edit_medias_une', {'id': trick.id}) }}')" ><i class="fa fa-edit"></i> Changer</a>
+                <img class="img-fluid rounded mb-4" src="{{ asset(trick.imgDefault.path) }}" alt="{{ trick.imgDefault.name }}" style="width: 1200px;height: 400px">
+            {% else %}
+                <a href="#" class="btn" name="Ajouter une image" onclick="changeMediaUne('{{ path('app_trick_edit_medias_une', {'id': trick.id}) }}')" ><i class="fa fa-edit"></i> Ajouter une image de couverture</a>
+
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 col-sm-6 mb-4">
+                <a href="#">
+                    <img class="img-fluid" src="http://placehold.it/500x300" alt="">
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <a href="#">
+                    <img class="img-fluid" src="http://placehold.it/500x300" alt="">
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <a href="#">
+                    <img class="img-fluid" src="http://placehold.it/500x300" alt="">
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <a href="#">
+                    <img class="img-fluid" src="http://placehold.it/500x300" alt="">
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+
+            {{ form_start(form) }}
+               <div class="control-group form-group">
+                   {{ form_label(form.name) }}
+
+                   {{ form_widget(form.name) }}
+
+                   <small>{{ form_errors(form.name) }}</small>
+               </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.content) }}
+
+                    {{ form_widget(form.content) }}
+
+                    <small>{{ form_errors(form.content) }}</small>
+                </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.category) }}
+
+                    {{ form_widget(form.category) }}
+
+                    <small>{{ form_errors(form.category) }}</small>
+                </div>
+                <div class="control-group form-group float-right">
+
+                        <a class="btn btn-danger" href="index.html"><i class="fa fa-trash"></i> Supprimer</a>
+
+                        <button class="btn btn-primary" type="submit" href="index.html"><i class="fa fa-save"></i> Enregistrer</button>
+
+
+                </div>
+            {{ form_end(form) }}
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

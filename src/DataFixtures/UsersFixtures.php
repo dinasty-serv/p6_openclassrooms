@@ -29,8 +29,17 @@ class UsersFixtures extends Fixture
         $user->setPassword($password);
 
         $manager->persist($user);
+
+        $user2 = new User();
+        $user2->setUsername('user1');
+        $user2->setEmail('test@email.com');
+        $user2->setStatus(false);
+
+        $password = $this->encoder->encodePassword($user, '0000');
+        $user2->setPassword($password);
+
+        $manager->persist($user2);
         $manager->flush();
-        // $product = new Product();
         //
     }
 }
