@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
@@ -40,6 +41,10 @@ class Comment
      */
     private $user;
 
+    public function __construct(){
+        $this->createdAt = new \DateTime();
+    }
+
     /**
      * @return int|null
      */
@@ -49,18 +54,18 @@ class Comment
     }
 
     /**
-     * @return DateTimeInterface|null
+     * @return DateTime
      */
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param DateTimeInterface $createdAt
+     * @param DateTime $createdAt
      * @return $this
      */
-    public function setCreatedAt(DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
