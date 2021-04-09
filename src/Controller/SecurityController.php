@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * Class SecurityController
@@ -63,7 +64,6 @@ class SecurityController extends AbstractController
 
         $form = $this->createForm(RegisterType::class);
         $form->handleRequest($request);
-        if ($request->isMethod('POST')){
             if ($form->isSubmitted() && $form->isValid()){
                 $user = $form->getData();
 
@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('app_home_page');
 
             }
-        }
+
 
         return $this->render('security/register.html.twig',['form' => $form->createView()]);
 
@@ -135,48 +135,39 @@ class SecurityController extends AbstractController
                             ),
                             'text/html'
                         );
-
-
                     if ($mailer->send($message)) {
-                        $this->addFlash(
-                            'success',
-                            'Un email de réinitialisation à été envoyé.'
-                        );
                         $em->flush();
-
-
                         return $this->redirectToRoute('app_login');
                     }
-                } else {
-                    $error = "Aucun compte ne correspond à votre email";
+
                 }
+                $this->addFlash(
+                    'success',
+                    'Si votre compte existe vous allez recevoir un email de réinitialisation. '
+                );
             }
         }
         return $this->render('security/forgot_password.html.twig', ['error' => $error, 'form' => $form->createView()]);
     }
 
 
-
     /**
-     * @Route("/reset-password/{token}", name="app_reset_password")
-     * @param string $token
+     * @Route("/reset-password/{resetToken}", name="app_reset_password")
+     * @param User $user
      * @param UserPasswordEncoderInterface $encoder
      * @param Request $request
      * @return Response
      */
-    public function resetPassword(string $token, UserPasswordEncoderInterface $encoder, Request $request): Response
+    public function resetPassword(User $user, UserPasswordEncoderInterface $encoder, Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(ResetPasswordType::class);
-        $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
         $error = '';
         if (!empty($user)) {
             $form->handleRequest($request);
             if ($request->isMethod('POST')) {
                 if ($form->isSubmitted() && $form->isValid()) {
                     $data = $form->getData();
-
-
                     $encoded = $encoder->encodePassword($user, $data['password']);
                     $user->setPassword($encoded);
                     $user->setResetToken(null);
@@ -192,7 +183,11 @@ class SecurityController extends AbstractController
                 }
             }
 
-            return $this->render('security/reset_password.html.twig', ['error' => $error, 'form' => $form->createView(), 'token' => $token]);
+            return $this->render('security/reset_password.html.twig',
+                ['error' => $error,
+                    'form' => $form->createView(),
+                    'token' => $user->getResetToken()
+                ]);
         } else {
             $this->addFlash(
                 'danger',
@@ -219,15 +214,12 @@ class SecurityController extends AbstractController
         $formChangePassword->handleRequest($request);
         $formEditAccount->handleRequest($request);
 
-        if ($request->isMethod('POST')) {
-
             //Form change password
             if ($formChangePassword->isSubmitted() && $formChangePassword->isValid()) {
                 $data = $formChangePassword->getData();
                 $encoded = $encoder->encodePassword($user, $data['plainPassword']);
                 $user->setPassword($encoded);
                 $em->persist($user);
-
                 $em->flush();
                 $this->addFlash(
                     'success',
@@ -244,7 +236,7 @@ class SecurityController extends AbstractController
                     'Votre compte à bien été modifié'
                 );
             }
-        }
+
         return $this->render(
             'security/account.html.twig',
             [
@@ -254,24 +246,22 @@ class SecurityController extends AbstractController
         );
     }
      /**
-      * @Route("/account/validate/{token}", name="app_account_validate")
+      * @Route("/account/validate/{resetToken}", name="app_account_validate")
       */
-    public function validateAccount(string $token):Response
+    public function validateAccount(User $user):Response
     {
         $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneBy(['resetToken' => $token]);
-        if ($user && $user->getStatus() == false){
+        if($user->getStatus() == false){
             $user->setResetToken(null);
             $user->setStatus(true);
             $em->persist($user);
             $em->flush();
             $this->addFlash('success','Votre compte a bien été activé, vous pouvez vous connecter');
-            return $this->redirectToRoute('app_login');
         }else{
             $this->addFlash('danger','Token invalide !');
-            return $this->redirectToRoute('app_login');
 
         }
+        return $this->redirectToRoute('app_login');
     }
     private function generateToken(): string
     {
