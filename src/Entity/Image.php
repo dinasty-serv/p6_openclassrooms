@@ -39,7 +39,7 @@ class Image
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="images")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $trick;
 
