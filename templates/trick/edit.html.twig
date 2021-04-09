@@ -12,19 +12,41 @@
 
             {% endif %}
         </div>
-
+        <h5>Photos</h5>
         <div class="row">
+            {% for image in trick.images %}
+                <div class="col-md-3 col-sm-6 mb-4">
+                        <img class="img-fluid" style="width: 255px; height: 122px;" src="{{ asset(image.path) }}" alt="">
+                    <div class="card-body">
+                        <h5>{{ image.name }}</h5>
+                        <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
+                        <a href="#" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
+
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary" onclick="addMediaTrick('{{ path('app_trick_add_medias', {'id': trick.id}) }}')" ><i class="fa fa-image"></i>Ajouter une photo</button>
+
+        <h5>Vidéos</h5>
+        <div class="row">
+            {% for video in trick.videos %}
             <div class="col-md-3 col-sm-6 mb-4">
-                <a href="#">
-                    <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-                </a>
+                    <iframe width="255" height="122" src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <div class="card-body">
+                    <h5>{{ video.name }}</h5>
                     <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
                     <a href="#" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
 
                 </div>
+
             </div>
+            {% endfor %}
         </div>
+        <button class="btn btn-primary" onclick="addMediaTrick('{{ path('app_trick_add_video', {'id': trick.id}) }}')" ><i class="fa fa-video"></i>Ajouter une vidéo</button>
+
+
         <div class="row">
             <div class="col-lg-12">
 

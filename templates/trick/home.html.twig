@@ -8,162 +8,23 @@
         <h2>Derniers Tricks</h2>
 
         <div class="row">
+            {% for trick in tricks %}
             <div class="col-lg-3 col-sm-6 portfolio-item">
                 <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
+                    <a href="{{ path('app_trick_view', {'slug':trick.slug}) }}"><img class="card-img-top" style="width: 255px; height: 155px;" src="{{ asset(trick.imgDefault.path) }}" alt=""></a>
                     <div class="card-body">
+
                         <h5 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_trick_view', {'slug':trick.slug}) }}">{{ trick.name }}</a>
+                            <a href="{{ path('app_trick_delete', {'id':trick.id}) }}" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_trick_edit', {'id':trick.id}) }}" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
 
                         </h5>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
+            {% endfor %}
 
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 portfolio-item">
-                <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="http://placehold.it/253x144" alt=""></a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="#">Tricks Title</a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="#" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </div>

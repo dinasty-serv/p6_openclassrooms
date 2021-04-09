@@ -4,3 +4,11 @@
     position: absolute;
     float: right;
 }
+.carousel-caption.d-none.d-md-block{
+    color: black !important;
+}
+.carousel-item img{
+    width: 1920px;
+    height: 960px;
+
+}
