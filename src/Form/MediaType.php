@@ -19,7 +19,7 @@ class MediaType extends AbstractType
                     'class' => 'form-control',
                 ],
                     'choices' => [
-                        'Video' => 'video',
+                        'VideoService' => 'video',
                         'Photos' => 'photo'
                     ],
                     'mapped' => false,

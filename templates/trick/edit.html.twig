@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
     <div class="container">
-
         <div class="row p-5 view_trick_header">
             {% if trick.imgDefault != null %}
                 <a href="#" class="btn" name="Editer" onclick="changeMediaUne('{{ path('app_trick_edit_medias_une', {'id': trick.id}) }}')" ><i class="fa fa-edit"></i> Changer</a>
@@ -15,20 +13,19 @@
         <h5>Photos</h5>
         <div class="row">
             {% for image in trick.images %}
+                {% if trick.imgDefault.id != image.id %}
                 <div class="col-md-3 col-sm-6 mb-4">
                         <img class="img-fluid" style="width: 255px; height: 122px;" src="{{ asset(image.path) }}" alt="">
                     <div class="card-body">
                         <h5>{{ image.name }}</h5>
                         <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
-                        <a href="#" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
-
+                        <a href="#" onclick="deleteMedia('{{ path('app_trick_delete_media', {'id':image.id}) }}')" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
                     </div>
-
                 </div>
+                {% endif %}
             {% endfor %}
         </div>
         <button class="btn btn-primary" onclick="addMediaTrick('{{ path('app_trick_add_medias', {'id': trick.id}) }}')" ><i class="fa fa-image"></i>Ajouter une photo</button>
-
         <h5>Vidéos</h5>
         <div class="row">
             {% for video in trick.videos %}
@@ -37,20 +34,16 @@
                 <div class="card-body">
                     <h5>{{ video.name }}</h5>
                     <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
-                    <a href="#" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
-
+                    <a href="#" onclick="deleteMedia('{{ path('app_trick_delete_video', {'id':video.id}) }}')" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
                 </div>
-
             </div>
             {% endfor %}
         </div>
         <button class="btn btn-primary" onclick="addMediaTrick('{{ path('app_trick_add_video', {'id': trick.id}) }}')" ><i class="fa fa-video"></i>Ajouter une vidéo</button>
-
-
         <div class="row">
             <div class="col-lg-12">
 
-            {{ form_start(form) }}
+            {{ form_start(form, {attr:{'action': path('app_trick_edit', {'id': trick.id})}}) }}
                <div class="control-group form-group">
                    {{ form_label(form.name) }}
 
@@ -67,22 +60,15 @@
                 </div>
                 <div class="control-group form-group">
                     {{ form_label(form.category) }}
-
                     {{ form_widget(form.category) }}
-
                     <small>{{ form_errors(form.category) }}</small>
                 </div>
-
                 <div class="control-group form-group float-right">
 
-                        <a class="btn btn-danger" href="index.html"><i class="fa fa-trash"></i> Supprimer</a>
-
-                        <button class="btn btn-primary" type="submit" href="index.html"><i class="fa fa-save"></i> Enregistrer</button>
-
-
+                        <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Enregistrer</button>
                 </div>
-            {{ form_end(form) }}
-
+                {{ form_end(form) }}
+                <button class="btn btn-danger" onclick="deleteTrick('{{ path('app_trick_delete', {id: trick.id}) }}')"><i class="fa fa-trash"></i> Supprimer</button>
 
             </div>
         </div>

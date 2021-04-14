@@ -25,14 +25,21 @@ function addVideoTrick(url){
     });
 }
 
-function editMedia(media){
 
+function deleteMedia(url){
+    get(url).done(function(response){
+        $('#modal_media_content').html(response);
+        $('#modal_media_id').html("Supprimer une image");
+        $('#modal_media').modal('show');
+    });
 }
-
-function deleteMedia(media){
-
+function deleteTrick(url){
+    get(url).done(function(response){
+        $('#modal_media_content').html(response);
+        $('#modal_media_id').html("Supprimer une figure");
+        $('#modal_media').modal('show');
+    });
 }
-
 function get(url){
     return $.ajax({
         type: 'GET',

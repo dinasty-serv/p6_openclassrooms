@@ -1,0 +1,6 @@
+<h5>Êtes-vous sur de vouloir supprimmer cette vidéo ?</h5>
+
+{{ form_start(form, {'attr': {'action': path('app_trick_delete_video',{'id': video.id})}})}}
+<button class="btn"> Annulé</button>
+<button type="submit" class="btn btn-primary">Supprimer</button>
+{{ form_end(form) }}
