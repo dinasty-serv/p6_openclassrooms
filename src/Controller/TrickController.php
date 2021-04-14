@@ -4,12 +4,19 @@
 namespace App\Controller;
 
 
+use App\Entity\Image;
+use App\Entity\Video;
 use App\Form\CommentType;
+use App\Form\DeleteImageType;
+use App\Form\DeleteTrickType;
+use App\Form\DeleteVideoType;
 use App\Form\ImgType;
 use App\Form\TrickType;
 use App\Entity\Category;
 use App\Form\VideoType;
+use App\Service\VideoService;
 use App\Util\Util;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,8 +36,6 @@ class TrickController extends AbstractController
         $tricks = $em->getRepository(Trick::class)->findBy([],['id' => 'DESC'],12);
         return $this->render('trick/home.html.twig', ['trickSlide' => $tricksSlide, 'tricks' => $tricks]);
     }
-
-
     /**
      * @Route("/trick/view/{slug}", name="app_trick_view", requirements={"slug"="[a-zA-Z1-9\-_\/]+"})
      * @param Trick $trick
@@ -46,7 +51,6 @@ class TrickController extends AbstractController
             $comment = $form->getData();
             $comment->setTrick($trick);
             $comment->setUser($this->getUser());
-            dump($comment);
             $em->persist($comment);
             $em->flush();
             $this->addFlash('success', "Votre commentaire a bien été ajouté.");
@@ -54,7 +58,6 @@ class TrickController extends AbstractController
         }
         return $this->render('trick/view.html.twig', ['trick' => $trick, 'form' => $form->createView()]);
     }
-
     /**
      * @Route("/tricks/{slug_category}", name="app_trick_view_all")
      * @param string|null $slug_category
@@ -74,7 +77,6 @@ class TrickController extends AbstractController
         }
         return $this->render('trick/view_all_tricks.html.twig',['tricks' => $tricks]);
     }
-
     /**
      * @Route("/trick/create", name="app_trick_create")
      * @param Request $request
@@ -84,6 +86,8 @@ class TrickController extends AbstractController
      */
     public function create(Request $request, Util $util, Uploader $uploader):Response
     {
+        $this->denyAccessUnlessGranted('create');
+
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(TrickType::class, null,['action' => 'create']);
         $form->handleRequest($request);
@@ -110,6 +114,8 @@ class TrickController extends AbstractController
      */
     public function edit(Trick $trick, Request $request):Response
     {
+        $this->denyAccessUnlessGranted('edit', $trick);
+
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
@@ -118,11 +124,10 @@ class TrickController extends AbstractController
                 $em->persist($trick);
                 $em->flush();
                 $this->addFlash('success','Le trick a bien été modifié');
-                return $this->redirectToRoute('app_trick_view',['slug' => $trick->getSlug(), 'id' =>$trick->getId()]);
+                return $this->redirectToRoute('app_trick_view',['slug' => $trick->getSlug()]);
             }
         return $this->render('trick/edit.html.twig',['trick' => $trick, 'form' =>$form->createView()]);
     }
-
     /**
      * @Route("/trick/{id}/add/media}", name="app_trick_add_medias", requirements={"id"="\d+","media_id"="\d+" })
      * @param Trick $trick
@@ -132,8 +137,9 @@ class TrickController extends AbstractController
      */
     public function addMediasTrick(Trick $trick, Request $request, Uploader $uploader): Response
     {
+        $this->denyAccessUnlessGranted('edit', $trick);
+
         $em = $this->getDoctrine()->getManager();
-        //TODO add Voter
         $form = $this->createForm(ImgType::class);
         $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
@@ -148,30 +154,90 @@ class TrickController extends AbstractController
     }
 
     /**
+     * @Route("/trick/media/{id}/delete",name="app_trick_delete_media",requirements={"id"="\d+"})
+     * @param Image $image
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param Uploader $uploader
+     * @return Response
+     */
+    public function deleteMedia(Image $image, Request $request, EntityManagerInterface $entityManager, Uploader $uploader): Response
+    {
+        $trick = $image->getTrick();
+        $this->denyAccessUnlessGranted('edit', $trick);
+
+        $form = $this->createForm(DeleteImageType::class, $image);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $image = $form->getData();
+            if ($uploader->deleteImage($image)) {
+                $entityManager->remove($image);
+
+                $entityManager->flush();
+
+                $this->addFlash('success', "L'image à bien été supperimé.");
+                return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
+            }else{
+                $this->addFlash('danger', "Impossible de supprimer l'image !");
+                return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
+            }
+        }
+        return $this->render('module/form_delete_media.html.twig',
+            ['form' => $form->createView(),
+                'image' => $image
+            ] );
+    }
+
+    /**
      * @Route("/trick/{id}/add/video/", name="app_trick_add_video", requirements={"id"="\d+"})
      * @param Trick $trick
      * @param Request $request
+     * @param VideoService $videoService
      * @return Response
      */
-    public function addVideoTrick(Trick $trick, Request $request): Response
+    public function addVideoTrick(Trick $trick, Request $request, VideoService $videoService): Response
     {
-        //TODO add Voter
-        $em = $this->getDoctrine()->getManager();
+        $this->denyAccessUnlessGranted('edit', $trick);
 
+        $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(VideoType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $video = $form->getData();
             $video->setTrick($trick);
+            $video =  $videoService->getUrl($video);
             $em->persist($video);
             $em->flush();
             $this->addFlash('success', "Votre vidéo a bien été ajouté.");
             return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
-
         }
         return $this->render('module/form_video.html.twig', ['form' => $form->createView(), 'id' => $trick->getId(),'route' => 'app_trick_add_video']);
     }
 
+    /**
+     * @Route("/trick/video/{id}/delete",name="app_trick_delete_video",requirements={"id"="\d+"})
+     * @param Video $video
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function deleteVideo(Video $video, Request $request, EntityManagerInterface $entityManager): Response
+    {
+
+        $trick = $video->getTrick();
+        $this->denyAccessUnlessGranted('edit', $trick);
+
+        $form = $this->createForm(DeleteVideoType::class, $video);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $video = $form->getData();
+            $entityManager->remove($video);
+            $entityManager->flush();
+            $this->addFlash('success', "La video a bien été supprimer.");
+            return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
+        }
+        return $this->render('module/form_delete_video.html.twig',['form' => $form->createView(), 'video' => $video] );
+    }
     /**
      * @Route("/trick/{id}/edit_une/", name="app_trick_edit_medias_une", requirements={"id"="\d+"})
      * @param Trick $trick
@@ -181,6 +247,8 @@ class TrickController extends AbstractController
      */
     public function editMediaUne(Trick $trick, Request $request, Uploader $uploader): Response
     {
+        $this->denyAccessUnlessGranted('edit', $trick);
+
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(ImgType::class);
         $form->handleRequest($request);
@@ -199,14 +267,24 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/delete/{id}", name="app_trick_delete", requirements={"id"="\d+"})
      * @param Trick $trick
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function deleteTrick(Trick $trick, Request $request): Response
+    public function deleteTrick(Trick $trick, Request $request, EntityManagerInterface $entityManager): Response
     {
-        //TODO add voter
+        $this->denyAccessUnlessGranted('delete', $trick);
 
-        return $this->render('trick/delete.html.twig');
-
+        $form = $this->createForm(DeleteTrickType::class, $trick);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $trick = $form->getData();
+            $entityManager->remove($trick);
+            $entityManager->flush();
+            $this->addFlash('success', "Le trick a bien été supprimer !");
+            return $this->redirectToRoute('app_trick_view_all');
+        }
+        return $this->render('module/form_delete_trick.html.twig',['form' => $form->createView(), 'trick' => $trick] );
     }
     /**
      * @Route("/loadCategory/", name="app_trick_view_category")
@@ -218,10 +296,4 @@ class TrickController extends AbstractController
         $category = $em->getRepository(Category::class)->findAll();
         return $this->render('module/category.html.twig', ['category' => $category]);
     }
-
-
-
-
-
-
 }

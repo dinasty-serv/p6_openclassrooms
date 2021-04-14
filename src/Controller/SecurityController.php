@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Image;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\EditAccountType;
@@ -222,7 +221,6 @@ class SecurityController extends AbstractController
         $formChangePassword->handleRequest($request);
         $formEditAccount->handleRequest($request);
         $formEditProfilImg->handleRequest($request);
-
         if ($request->isMethod('POST')) {
             //Form change password
             if ($formChangePassword->isSubmitted() && $formChangePassword->isValid()) {
@@ -251,7 +249,6 @@ class SecurityController extends AbstractController
                 $img = $uploader->saveImage($formEditProfilImg->getData());
                 $user = $this->getUser();
                 $user->setImgProfile($img->getPath());
-
                 $em->persist($user);
                 $em->flush();
                 $this->addFlash(
