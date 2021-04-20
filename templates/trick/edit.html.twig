@@ -68,8 +68,9 @@
                         <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Enregistrer</button>
                 </div>
                 {{ form_end(form) }}
+                {% if app.user == trick.user %}
                 <button class="btn btn-danger" onclick="deleteTrick('{{ path('app_trick_delete', {id: trick.id}) }}')"><i class="fa fa-trash"></i> Supprimer</button>
-
+                    {% endif %}
             </div>
         </div>
     </div>

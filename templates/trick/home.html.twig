@@ -16,9 +16,12 @@
 
                         <h5 class="card-title">
                             <a href="{{ path('app_trick_view', {'slug':trick.slug}) }}">{{ trick.name }}</a>
-                            <a href="{{ path('app_trick_delete', {'id':trick.id}) }}" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <a href="{{ path('app_trick_edit', {'id':trick.id}) }}" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
-
+                            {% if app.user == trick.user %}
+                            <a href="#" onclick="deleteTrick('{{ path('app_trick_delete', {id: trick.id}) }}')" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            {% endif %}
+                            {% if app.user %}
+                                <a href="{{ path('app_trick_edit', {'id':trick.id}) }}" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                            {% endif %}
                         </h5>
                     </div>
                 </div>

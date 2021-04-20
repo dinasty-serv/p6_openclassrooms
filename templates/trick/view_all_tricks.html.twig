@@ -29,8 +29,9 @@
         </div>
 
     </div>
+    {% if app.user %}
     <a  class="btn btn-primary float-right"  href="{{ path('app_trick_create') }}">Ajouter un trick</a>
-
+{% endif %}
 </div>
 {% endblock %}
 

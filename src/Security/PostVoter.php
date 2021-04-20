@@ -22,7 +22,8 @@ class PostVoter extends Voter
         }
 
         // only vote on `Post` objects
-        if (!$subject instanceof Trick) {
+
+        if ($subject && !$subject instanceof Trick) {
             return false;
         }
 
@@ -47,6 +48,8 @@ class PostVoter extends Voter
                 return $this->canDelete($trick, $user);
             case self::EDIT:
                 return $this->canEdit($trick, $user);
+            case self::CREATE:
+                return $this->canCreate($user);
         }
 
     }
@@ -64,5 +67,12 @@ class PostVoter extends Voter
     private function canDelete(Trick $trick, User $user): bool
     {
        return $user === $trick->getUser();
+    }
+
+    private function canCreate(User $user)
+    {
+        if ($user){
+            return true;
+        }
     }
 }
