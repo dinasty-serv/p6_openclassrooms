@@ -40,6 +40,24 @@ function deleteTrick(url){
         $('#modal_media').modal('show');
     });
 }
+
+function editMedia(url){
+    get(url).done(function(response){
+        $('#modal_media_content').html(response);
+        $('#modal_media_id').html("Editer une image");
+        $('#modal_media').modal('show');
+    });
+}
+
+function editVideo(url){
+    get(url).done(function(response){
+        $('#modal_media_content').html(response);
+        $('#modal_media_id').html("Editer une vidéo");
+        $('#modal_media').modal('show');
+    });
+}
+
+
 function get(url){
     return $.ajax({
         type: 'GET',

@@ -154,6 +154,30 @@ class TrickController extends AbstractController
     }
 
     /**
+     * @Route("/trick/{id}/edit/media/{media_id}", name="app_trick_edit_medias", requirements={"id"="\d+","media_id"="\d+" })
+     * @param Trick $trick
+     * @param Request $request
+     * @param Uploader $uploader
+     * @return Response
+     */
+    public function editMediasTrick(Trick $trick,int $media_id, Request $request, Uploader $uploader, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('edit', $trick);
+        $image = $em->getRepository(Image::class)->find($media_id);
+        $form = $this->createForm(ImgType::class, $image);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $media =  $uploader->saveImage($form->getData());
+            $media->setTrick($trick);
+            $em->persist($media);
+            $em->flush();
+            $this->addFlash('success', "Votre photo a bien été modifié.");
+            return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
+        }
+        return $this->render('module/form_media.html.twig', ['form' => $form->createView(), 'id' => $trick->getId(),'route' => 'app_trick_add_medias']);
+    }
+
+    /**
      * @Route("/trick/media/{id}/delete",name="app_trick_delete_media",requirements={"id"="\d+"})
      * @param Image $image
      * @param Request $request
@@ -198,7 +222,6 @@ class TrickController extends AbstractController
     public function addVideoTrick(Trick $trick, Request $request, VideoService $videoService): Response
     {
         $this->denyAccessUnlessGranted('edit', $trick);
-
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(VideoType::class);
         $form->handleRequest($request);
@@ -209,6 +232,33 @@ class TrickController extends AbstractController
             $em->persist($video);
             $em->flush();
             $this->addFlash('success', "Votre vidéo a bien été ajouté.");
+            return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
+        }
+        return $this->render('module/form_video.html.twig', ['form' => $form->createView(), 'id' => $trick->getId(),'route' => 'app_trick_add_video']);
+    }
+
+    /**
+     * @Route("/trick/{id}/edit/video/{video_id}", name="app_trick_edit_video", requirements={"id"="\d+","video_id"="\d+"})
+     * @param Trick $trick
+     * @param int $video_id
+     * @param Request $request
+     * @param VideoService $videoService
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function editVideoTrick(Trick $trick, int $video_id, Request $request, VideoService $videoService, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('edit', $trick);
+        $video = $em->getRepository(Video::class)->find($video_id);
+        $form = $this->createForm(VideoType::class, $video);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $video = $form->getData();
+            $video->setTrick($trick);
+            $video =  $videoService->getUrl($video);
+            $em->persist($video);
+            $em->flush();
+            $this->addFlash('success', "Votre vidéo a bien été modifié.");
             return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
         }
         return $this->render('module/form_video.html.twig', ['form' => $form->createView(), 'id' => $trick->getId(),'route' => 'app_trick_add_video']);
