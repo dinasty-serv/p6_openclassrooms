@@ -3,9 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -54,11 +53,15 @@ class User implements UserInterface
     private $imgProfile;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $status = false;
+    /**
      * User constructor.
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**
@@ -103,13 +106,11 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
-
     /**
      * @see UserInterface
      */
@@ -213,6 +214,18 @@ class User implements UserInterface
     public function setImgProfile(?string $imgProfile): self
     {
         $this->imgProfile = $imgProfile;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

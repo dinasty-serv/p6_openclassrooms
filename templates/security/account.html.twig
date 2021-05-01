@@ -1,7 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="container">
+    <div class="row p-lg-5">
+        <dov class="col-md-6">
 
+         {% include 'Form/edit_account.html.twig' %}
+
+        </dov>
+        <dov class="col-md-6">
+
+            {% include 'Form/change_password.html.twig' %}
+
+        </dov>
+    </div>
+</div>
 {% endblock %}
 
 {% block title %}
