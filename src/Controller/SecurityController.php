@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\EditAccountType;
 use App\Form\ForgotPasswordType;
+use App\Form\ImgType;
 use App\Form\RegisterType;
 use App\Form\ResetPasswordType;
+use App\Service\Uploader;
 use LogicException;
 use Swift_Mailer;
 use Swift_Message;
@@ -135,6 +138,7 @@ class SecurityController extends AbstractController
                             ),
                             'text/html'
                         );
+
                     if ($mailer->send($message)) {
                         $em->flush();
                         return $this->redirectToRoute('app_login');
@@ -204,15 +208,19 @@ class SecurityController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function account(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function account(Request $request, UserPasswordEncoderInterface $encoder, Uploader $uploader): Response
     {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $formChangePassword = $this->createForm(ChangePasswordType::class);
         $formEditAccount = $this->createForm(EditAccountType::class, $user);
+        $formEditProfilImg = $this->createForm(ImgType::class);
 
         $formChangePassword->handleRequest($request);
         $formEditAccount->handleRequest($request);
+        $formEditProfilImg->handleRequest($request);
+
+        if ($request->isMethod('POST')) {
 
             //Form change password
             if ($formChangePassword->isSubmitted() && $formChangePassword->isValid()) {
@@ -236,6 +244,20 @@ class SecurityController extends AbstractController
                     'Votre compte à bien été modifié'
                 );
             }
+
+            if ($formEditProfilImg->isSubmitted() && $formEditAccount->isValid()) {
+                $img = $uploader->saveImage($formEditProfilImg->getData());
+                $user = $this->getUser();
+                $user->setImgProfile($img->getPath());
+
+                $em->persist($user);
+                $em->flush();
+                $this->addFlash(
+                    'success',
+                    'Votre compte à bien été modifié'
+                );
+            }
+        }
 
         return $this->render(
             'security/account.html.twig',
@@ -267,10 +289,8 @@ class SecurityController extends AbstractController
     {
         //Generate a random string.
         $token = openssl_random_pseudo_bytes(16);
-
         //Convert the binary data into hexadecimal representation.
         $token = bin2hex($token);
-
         //Print it out for example purposes.
         return $token;
     }

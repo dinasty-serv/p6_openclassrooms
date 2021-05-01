@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="row p-5 view_trick_header">
+            {% if trick.imgDefault != null %}
+                <a href="#" class="btn" name="Editer" onclick="changeMediaUne('{{ path('app_trick_edit_medias_une', {'id': trick.id}) }}')" ><i class="fa fa-edit"></i> Changer</a>
+                <img class="img-fluid rounded mb-4" src="{{ asset(trick.imgDefault.path) }}" alt="{{ trick.imgDefault.name }}" style="width: 1200px;height: 400px">
+            {% else %}
+                <a href="#" class="btn" name="Ajouter une image" onclick="changeMediaUne('{{ path('app_trick_edit_medias_une', {'id': trick.id}) }}')" ><i class="fa fa-edit"></i> Ajouter une image de couverture</a>
+
+            {% endif %}
+        </div>
+        <h5>Photos</h5>
+        <div class="row">
+            {% for image in trick.images %}
+                <div class="col-md-3 col-sm-6 mb-4">
+                        <img class="img-fluid" style="width: 255px; height: 122px;" src="{{ asset(image.path) }}" alt="">
+                    <div class="card-body">
+                        <h5>{{ image.name }}</h5>
+                        <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
+                        <a href="#" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
+
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary" onclick="addMediaTrick('{{ path('app_trick_add_medias', {'id': trick.id}) }}')" ><i class="fa fa-image"></i>Ajouter une photo</button>
+
+        <h5>Vidéos</h5>
+        <div class="row">
+            {% for video in trick.videos %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                    <iframe width="255" height="122" src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="card-body">
+                    <h5>{{ video.name }}</h5>
+                    <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
+                    <a href="#" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary" onclick="addMediaTrick('{{ path('app_trick_add_video', {'id': trick.id}) }}')" ><i class="fa fa-video"></i>Ajouter une vidéo</button>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+
+            {{ form_start(form) }}
+               <div class="control-group form-group">
+                   {{ form_label(form.name) }}
+
+                   {{ form_widget(form.name) }}
+
+                   <small>{{ form_errors(form.name) }}</small>
+               </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.content) }}
+
+                    {{ form_widget(form.content) }}
+
+                    <small>{{ form_errors(form.content) }}</small>
+                </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.category) }}
+
+                    {{ form_widget(form.category) }}
+
+                    <small>{{ form_errors(form.category) }}</small>
+                </div>
+
+                <div class="control-group form-group float-right">
+
+                        <a class="btn btn-danger" href="index.html"><i class="fa fa-trash"></i> Supprimer</a>
+
+                        <button class="btn btn-primary" type="submit" href="index.html"><i class="fa fa-save"></i> Enregistrer</button>
+
+
+                </div>
+            {{ form_end(form) }}
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

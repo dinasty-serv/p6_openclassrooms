@@ -1,0 +1,14 @@
+.view_trick_header a{
+    color: #222;
+    margin: 10px;
+    position: absolute;
+    float: right;
+}
+.carousel-caption.d-none.d-md-block{
+    color: black !important;
+}
+.carousel-item img{
+    width: 1920px;
+    height: 960px;
+
+}

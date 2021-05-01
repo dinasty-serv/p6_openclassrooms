@@ -1,0 +1,21 @@
+
+
+<div class="row p-lg-5 justify-content-center">
+            {{ form_start(form, {'attr': {'action': path(route,{'id': id})}})}}
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_label(form.name)}}
+                        {{ form_widget(form.name)}}
+
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.file)}}
+                        {{ form_widget(form.file)}}
+                    </div>
+                </div>
+                    <button class="btn btn-primary float-right" type="submit">
+                        Enregistrer
+                    </button>
+            {{ form_end(form) }}
+
+</div>

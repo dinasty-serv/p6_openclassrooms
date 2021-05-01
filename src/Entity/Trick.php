@@ -36,7 +36,7 @@ class Trick
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -66,10 +66,15 @@ class Trick
     private $comments;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tricks")
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Image::class, cascade={"persist", "remove"})
+     */
+    private $imgDefault;
 
     /**
      * Trick constructor.
@@ -79,6 +84,12 @@ class Trick
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->comments = new ArrayCollection();
+
+        if ($this->createdAt == null){
+            $this->createdAt = new \DateTime();
+        }else{
+            $this->updatedAt = new \DateTime();
+        }
     }
 
     /**
@@ -302,6 +313,18 @@ class Trick
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getImgDefault(): ?Image
+    {
+        return $this->imgDefault;
+    }
+
+    public function setImgDefault(?Image $imgDefault): self
+    {
+        $this->imgDefault = $imgDefault;
 
         return $this;
     }

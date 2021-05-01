@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row p-lg-5">
+            <div class="col-lg-12">
+
+                {{ form_start(form) }}
+                <div class="control-group form-group">
+                    {{ form_label(form.name) }}
+
+                    {{ form_widget(form.name) }}
+
+                    <small>{{ form_errors(form.name) }}</small>
+                </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.content) }}
+
+                    {{ form_widget(form.content) }}
+
+                    <small>{{ form_errors(form.content) }}</small>
+                </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.category) }}
+
+                    {{ form_widget(form.category) }}
+
+                    <small>{{ form_errors(form.category) }}</small>
+                </div>
+                <h4>Photo de couverture</h4>
+                <div class="control-group form-group">
+                    {{ form_label(form.imgDefault.name) }}
+
+                    {{ form_widget(form.imgDefault.name) }}
+
+                    <small>{{ form_errors(form.imgDefault.name) }}</small>
+                </div>
+                <div class="control-group form-group">
+                    {{ form_label(form.imgDefault.file) }}
+
+                    {{ form_widget(form.imgDefault.file) }}
+
+                    <small>{{ form_errors(form.imgDefault.file) }}</small>
+                </div>
+                <div class="control-group form-group float-right">
+                    <button class="btn btn-primary" type="submit" href="index.html"><i class="fa fa-save"></i> Ajouter</button>
+                </div>
+                {{ form_end(form) }}
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
