@@ -39,7 +39,8 @@ class Image
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="images")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     *
      */
     private $trick;
 
@@ -49,6 +50,17 @@ class Image
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

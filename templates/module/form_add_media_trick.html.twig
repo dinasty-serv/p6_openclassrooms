@@ -1,0 +1,38 @@
+
+
+<div class="row p-lg-5 justify-content-center">
+            {{ form_start(form, {'attr': {'action': path('app_trick_add_medias',{'id': trick.id})}})}}
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_label(form.type)}}
+                        {{ form_widget(form.type)}}
+
+                    </div>
+                    {% if form.media is defined %}
+                        <div class="form-group">
+                            {{ form_label(form.media.name)}}
+                            {{ form_widget(form.media.name)}}
+                        </div>
+                    <div class="form-group">
+                        {{ form_label(form.media.file)}}
+                        {{ form_widget(form.media.file)}}
+                    </div>
+                    {% endif %}
+                    {% if form.video is defined %}
+                        <div class="form-group">
+                            {{ form_label(form.video.name)}}
+                            {{ form_widget(form.video.name)}}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.video.url)}}
+                            {{ form_widget(form.video.url)}}
+                        </div>
+                    {% endif %}
+
+                </div>
+                    <button class="btn btn-primary float-right" type="submit">
+                        Enregistrer
+                    </button>
+            {{ form_end(form) }}
+
+</div>

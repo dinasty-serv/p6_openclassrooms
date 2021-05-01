@@ -1,14 +1,11 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
 <div class="container">
     <h1 class="mt-4 mb-3">
         {{trick.name}}
         <small class="float-right">
-
             <a href="{{ path('app_trick_edit',{'id': trick.id}) }}" class="btn"><i class="fa fa-edit"></i></a>
             <a href="#" class="btn"><i class="fa fa-trash"></i></a>
-
         </small>
     </h1>
     <div class="row p-5">
@@ -16,79 +13,76 @@
             <img class="img-fluid rounded mb-4" src="{{ asset(trick.imgDefault.path) }}" alt="{{ trick.imgDefault.name }}" style="width: 1200px;height: 400px">
         {% endif %}
     </div>
+    <h5>Photos</h5>
     <div class="row">
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </a>
-
-        </div>
-
+        {% for image in trick.images %}
+            {% if trick.imgDefault.id != image.id %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                    <img class="img-fluid" src="{{ asset(image.path) }}" alt="">
+                <div class="card-body">
+                    <h5>{{ image.name }}</h5>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <h5>Vidéos</h5>
+    <div class="row">
+        {% for video in trick.videos %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <iframe width="255" height="122" src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="card-body">
+                    <h5>{{ video.name }}</h5>
+                </div>
+            </div>
+        {% endfor %}
     </div>
     <div class="row">
         <div class="col-lg-12">
-
             <!-- Post Content -->
-
             <p>{{ trick.content }}</p>
-
-
             <hr>
-
             <!-- Date/Time -->
             <div class="justify-content-center">
-            <p>Psoté le: {{ trick.createdAt|date("d/m/Y") }} par: {{ trick.user.username }}</p>
+            <p>Posté le: {{ trick.createdAt|date("d/m/Y") }} par: {{ trick.user.username }}</p>
             </div>
-
             <hr>
             <!-- Comments Form -->
+            <h5>Espace commentaires</h5>
             <div class="card my-4">
-                <h5 class="card-header">Leave a Comment:</h5>
+                <h5 class="card-header">Ajouter un commentaire</h5>
+                {% if app.user %}
                 <div class="card-body">
-                    <form>
+                    {{ form_start(form) }}
                         <div class="form-group">
-                            <textarea class="form-control" rows="3"></textarea>
+                           {{ form_label(form.content) }}
+                            {{ form_widget(form.content) }}
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    {{ form_end(form) }}
                 </div>
+                {% else %}
+                    <div class="alert alert-info">Vous devez être connecté pour ajouté un commentaire.</div>
+                {% endif %}
             </div>
-
             <!-- Single Comment -->
-            <div class="media mb-4">
+            {% if trick.comments %}
+                {% for comment in trick.comments %}
+                    <hr>
+                    <div class="media mb-4">
                 <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                 <div class="media-body">
-                    <h5 class="mt-0">Commenter Name</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                    <h5 class="mt-0">{{ comment.user.username }}</h5>
+                    {{ comment.content }}
+                    <hr>
+                   Posté le:  {{ comment.createdAt|date("d/m/Y") }}
                 </div>
             </div>
-
-            <!-- Comment with nested comments -->
-            <div class="media mb-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                    <h5 class="mt-0">Commenter Name</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-
-                    <div class="media mt-4">
-                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                        <div class="media-body">
-                            <h5 class="mt-0">Commenter Name</h5>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
-                    </div>
-
-                    <div class="media mt-4">
-                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                        <div class="media-body">
-                            <h5 class="mt-0">Commenter Name</h5>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+                    <hr>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">Aucun commentaire !</div>
+            {% endif %}
         </div>
     </div>
 </div>

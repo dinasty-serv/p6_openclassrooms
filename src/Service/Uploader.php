@@ -5,6 +5,7 @@ namespace App\Service;
 
 
 use App\Entity\Image;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Uploader
 {
@@ -24,5 +25,23 @@ class Uploader
         $image->setPath($path);
 
         return $image;
+    }
+
+    /**
+     * Save new media
+     *
+     * @param Image $image
+     * @return bool $image
+     */
+    public function deleteImage(Image $image): bool
+    {
+        $fs = new Filesystem();
+        try {
+            $fs->remove($image->getPath());
+            return true;
+        } catch (IOException $e) {
+            return false;
+
+        }
     }
 }
