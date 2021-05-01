@@ -1,4 +1,5 @@
-https://insight.symfony.com/projects/31dd9a60-114b-4826-9817-1d8c75f2f87b/big.svg
+[![SymfonyInsight](https://insight.symfony.com/projects/7a7378b7-d164-45b2-baa8-75c2783ed124/big.svg)](https://insight.symfony.com/projects/7a7378b7-d164-45b2-baa8-75c2783ed124)
+
 # p6_openclassrooms
 Installation: 
 1) git@github.com:dinasty-serv/p6_openclassrooms.git ./snowtricks
