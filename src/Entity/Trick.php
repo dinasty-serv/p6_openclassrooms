@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TrickRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -88,10 +89,10 @@ class Trick
         $this->videos = new ArrayCollection();
         $this->comments = new ArrayCollection();
 
-        if ($this->createdAt == null){
-            $this->createdAt = new \DateTime();
+        if ($this->createdAt === null){
+            $this->createdAt = new DateTime();
         }else{
-            $this->updatedAt = new \DateTime();
+            $this->updatedAt = new DateTime();
         }
     }
 

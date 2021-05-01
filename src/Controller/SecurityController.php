@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * Class SecurityController
@@ -34,13 +33,8 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
 
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
@@ -118,7 +112,7 @@ class SecurityController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
                 $user = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-                if ($user != null) {
+                if ($user) {
                     $token = $this->generateToken();
 
                     $user->setResetToken($token);
@@ -270,7 +264,7 @@ class SecurityController extends AbstractController
     public function validateAccount(User $user):Response
     {
         $em = $this->getDoctrine()->getManager();
-        if($user->getStatus() == false){
+        if($user->getStatus() === false){
             $user->setResetToken(null);
             $user->setStatus(true);
             $em->persist($user);

@@ -5,6 +5,7 @@ namespace App\Service;
 
 
 use App\Entity\Image;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Uploader
