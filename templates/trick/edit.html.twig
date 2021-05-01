@@ -18,7 +18,7 @@
                         <img class="img-fluid" style="width: 255px; height: 122px;" src="{{ asset(image.path) }}" alt="">
                     <div class="card-body">
                         <h5>{{ image.name }}</h5>
-                        <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
+                        <a href="#" onclick="editMedia('{{ path('app_trick_edit_medias', {'id':trick.id, 'media_id':image.id}) }}')" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
                         <a href="#" onclick="deleteMedia('{{ path('app_trick_delete_media', {'id':image.id}) }}')" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                     <iframe width="255" height="122" src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <div class="card-body">
                     <h5>{{ video.name }}</h5>
-                    <a href="#" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
+                    <a href="#" onclick="editVideo('{{ path('app_trick_edit_video', {'id':trick.id, 'video_id':video.id}) }}')" class="btn btn-primary float-right"><i class="fa fa-edit"></i></a>
                     <a href="#" onclick="deleteMedia('{{ path('app_trick_delete_video', {'id':video.id}) }}')" class="btn btn-danger float-left"><i class="fa fa-trash"></i></a>
                 </div>
             </div>
@@ -68,8 +68,9 @@
                         <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Enregistrer</button>
                 </div>
                 {{ form_end(form) }}
+                {% if app.user == trick.user %}
                 <button class="btn btn-danger" onclick="deleteTrick('{{ path('app_trick_delete', {id: trick.id}) }}')"><i class="fa fa-trash"></i> Supprimer</button>
-
+                    {% endif %}
             </div>
         </div>
     </div>

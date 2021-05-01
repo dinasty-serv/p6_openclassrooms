@@ -1,0 +1,19 @@
+{% for trick in tricks %}
+    <div class="col-lg-3 col-sm-6 portfolio-item">
+        <div class="card h-100">
+            <a href="{{ path('app_trick_view', {'slug':trick.slug}) }}"><img class="card-img-top" style="width: 255px; height: 155px;" src="{{ asset(trick.imgDefault.path) }}" alt=""></a>
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    <a href="{{ path('app_trick_view', {'slug':trick.slug}) }}">{{ trick.name }}</a>
+                    {% if app.user == trick.user %}
+                        <a href="#" onclick="deleteTrick('{{ path('app_trick_delete', {id: trick.id}) }}')" class="btn btn-sm  float-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if app.user %}
+                        <a href="{{ path('app_trick_edit', {'id':trick.id}) }}" class="btn btn-sm  float-right"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                    {% endif %}
+                </h5>
+            </div>
+        </div>
+    </div>
+{% endfor %}

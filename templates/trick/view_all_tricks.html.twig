@@ -29,8 +29,13 @@
         </div>
 
     </div>
-    <a  class="btn btn-primary float-right"  href="{{ path('app_trick_create') }}">Ajouter un trick</a>
+    {% if app.user %}
+        <div class="d-flex justify-content-center mb-2">
 
+            <a  class="btn btn-primary float-right"  href="{{ path('app_trick_create') }}">Ajouter un trick</a>
+
+        </div>
+{% endif %}
 </div>
 {% endblock %}
 

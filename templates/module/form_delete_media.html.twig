@@ -1,6 +1,8 @@
 <h5>Êtes-vous sur de vouloir supprimmer cette photo ?</h5>
 
 {{ form_start(form, {'attr': {'action': path('app_trick_delete_media',{'id': image.id})}})}}
-<button class="btn"> Annulé</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+    Annulé
+</button>
 <button type="submit" class="btn btn-primary">Supprimer</button>
 {{ form_end(form) }}

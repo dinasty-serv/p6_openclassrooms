@@ -18,12 +18,17 @@ class ImgType extends AbstractType
                 [
                     'class' => 'form-control',
                     'placeholder' => 'Nom de la photos',
-                ]])
+
+
+                ],
+                'label' => 'Nom'])
             ->add('file', FileType::class,[
                 'attr' =>
                     [
                         'class' => 'form-control',
-                    ]
+
+                    ],
+                'label' => 'Fichier'
             ])
         ;
 
