@@ -68,27 +68,41 @@
                 {% endif %}
             </div>
             <!-- Single Comment -->
-            {% if trick.comments %}
-                {% for comment in trick.comments %}
-                    <hr>
-                    <div class="media mb-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                    <h5 class="mt-0">{{ comment.user.username }}</h5>
-                    {{ comment.content }}
-                    <hr>
-                   Posté le:  {{ comment.createdAt|date("d/m/Y") }}
-                </div>
+            <div id="commentBody">
+
             </div>
-                    <hr>
-                {% endfor %}
-            {% else %}
-                <div class="alert alert-info">Aucun commentaire !</div>
-            {% endif %}
+            <div class="d-flex justify-content-center mb-2">
+
+                <button id="moreViewsComments" class="btn btn-primary" >Voir plus</button>
+
+            </div>
         </div>
     </div>
 </div>
 
 
 {% endblock %}
+{% block javascripts %}
+    <script>
+        var page = 1;
+
+        window.onload = function() {
+            $('#moreViewsComments').click(function(){
+                page ++
+                loadTricks(page);
+            });
+            loadTricks(page);
+        };
+        function loadTricks(page){
+            var area = $("#commentBody");
+            $.ajax({
+                method: "GET",
+                url: "{{ path('app_load_tricks_comments', {'trick': trick.id, 'page': null}) }}/"+page,
+            })
+                .done(function( tricksHtml ) {
+                    area.append(tricksHtml);
+                });
+        }
+    </script>
+{% endblock javascripts %}
 

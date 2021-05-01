@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Video;
 use App\Form\CommentType;
@@ -33,8 +34,48 @@ class TrickController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $tricksSlide = $em->getRepository(Trick::class)->findBy([],['id' => 'DESC'],3);
-        $tricks = $em->getRepository(Trick::class)->findBy([],['id' => 'DESC'],12);
+        $tricks = $em->getRepository(Trick::class)->findBy([],['id' => 'DESC'],8);
         return $this->render('trick/home.html.twig', ['trickSlide' => $tricksSlide, 'tricks' => $tricks]);
+    }
+
+    /**
+     * @Route("/loadTrick/{page}", name="app_load_tricks", defaults={"page"=null})
+     * @param int $page
+     * @return Response
+     */
+    public function loadTricks(int $page): Response
+    {
+
+        $max = 8;
+
+        $em = $this->getDoctrine()->getManager();
+        $tricks = $em->getRepository(Trick::class)->
+
+        createQueryBuilder('a')
+                ->setFirstResult(($page*$max)-$max)
+                ->setMaxResults($max);
+
+        return $this->render('module/trick.html.twig', ['tricks' => $tricks->getQuery()->getResult()]);
+
+
+    }
+    /**
+     * @Route("/loadTrickComment/{trick}/{page}", name="app_load_tricks_comments", defaults={"page"=null})
+     * @param int $page
+     * @return Response
+     */
+    public function loadComments(int $trick, int $page){
+        $max = 5;
+
+        $em = $this->getDoctrine()->getManager();
+        $comments = $em->getRepository(Comment::class)->
+
+        createQueryBuilder('a')
+            ->where('a.trick='.$trick)
+            ->setFirstResult(($page*$max)-$max)
+            ->setMaxResults($max);
+
+        return $this->render('module/comment.html.twig', ['comments' => $comments->getQuery()->getResult()]);
     }
     /**
      * @Route("/trick/view/{slug}", name="app_trick_view", requirements={"slug"="[a-zA-Z1-9\-_\/]+"})
