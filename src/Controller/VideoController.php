@@ -6,7 +6,7 @@ use App\Entity\Trick;
 use App\Entity\Video;
 use App\Form\DeleteVideoType;
 use App\Form\VideoType;
-use App\Service\VideoService;
+use App\Service\CommentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,10 +20,10 @@ class VideoController extends AbstractController
      * @Route("/trick/{id}/add/video/", name="app_trick_add_video", requirements={"id"="\d+"})
      * @param Trick $trick
      * @param Request $request
-     * @param VideoService $videoService
+     * @param CommentService $videoService
      * @return Response
      */
-    public function addVideoTrick(Trick $trick, Request $request, VideoService $videoService): Response
+    public function addVideoTrick(Trick $trick, Request $request, CommentService $videoService): Response
     {
         $this->denyAccessUnlessGranted('edit', $trick);
         $em = $this->getDoctrine()->getManager();
@@ -46,11 +46,11 @@ class VideoController extends AbstractController
      * @param Trick $trick
      * @param int $video_id
      * @param Request $request
-     * @param VideoService $videoService
+     * @param CommentService $videoService
      * @param EntityManagerInterface $em
      * @return Response
      */
-    public function editVideoTrick(Trick $trick, int $video_id, Request $request, VideoService $videoService, EntityManagerInterface $em): Response
+    public function editVideoTrick(Trick $trick, int $video_id, Request $request, CommentService $videoService, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('edit', $trick);
         $video = $em->getRepository(Video::class)->find($video_id);

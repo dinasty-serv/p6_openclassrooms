@@ -25,7 +25,8 @@ class CommentController extends AbstractController
         createQueryBuilder('a')
             ->where('a.trick='.$trick)
             ->setFirstResult(($page*$max)-$max)
-            ->setMaxResults($max);
+            ->setMaxResults($max)
+            ->orderBy('a.id', 'DESC');
 
         return $this->render('module/comment.html.twig', ['comments' => $comments->getQuery()->getResult()]);
     }
