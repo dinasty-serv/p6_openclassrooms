@@ -6,11 +6,18 @@ use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Util\Util;
+
+
 class CategoryFixtures extends Fixture
 {
+    private $util;
+
+    public function __construct(Util $util){
+        $this->util = $util;
+    }
+
     public function load(ObjectManager $manager)
     {
-        $util = new Util();
         $categories = [
             "Les grabs",
             "Les rotations",
@@ -23,7 +30,7 @@ class CategoryFixtures extends Fixture
         foreach ($categories as $category) {
             $categoryEntity = new Category();
             $categoryEntity->setName($category);
-            $categoryEntity->setSlug($util->getSlug($category));
+            $categoryEntity->setSlug($this->util->getSlug($category));
             $manager->persist($categoryEntity);
             $manager->flush();
 
@@ -31,4 +38,5 @@ class CategoryFixtures extends Fixture
         // $product = new Product();
         //
     }
+
 }
