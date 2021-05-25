@@ -7,6 +7,8 @@ use App\Form\CommentType;
 use App\Form\DeleteTrickType;
 use App\Form\TrickType;
 use App\Entity\Category;
+use App\Service\CommentService;
+use App\Service\TrickService;
 use App\Util\Util;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,15 +38,14 @@ class TrickController extends AbstractController
      */
     public function loadTricks(int $page): Response
     {
-
         $max = 8;
-
         $em = $this->getDoctrine()->getManager();
         $tricks = $em->getRepository(Trick::class)->
 
         createQueryBuilder('a')
                 ->setFirstResult(($page*$max)-$max)
-                ->setMaxResults($max);
+                ->setMaxResults($max)
+                ->orderBy('a.id', 'DESC');
 
         return $this->render('module/trick.html.twig', ['tricks' => $tricks->getQuery()->getResult()]);
 
@@ -57,17 +58,13 @@ class TrickController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function view(Trick $trick, Request $request):Response
+    public function view(Trick $trick, Request $request, CommentService $commentService):Response
     {
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(CommentType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            $comment = $form->getData();
-            $comment->setTrick($trick);
-            $comment->setUser($this->getUser());
-            $em->persist($comment);
-            $em->flush();
+            $commentService->newComment($form, $trick);
             $this->addFlash('success', "Votre commentaire a bien été ajouté.");
             return $this->redirectToRoute('app_trick_view', ['slug' => $trick->getSlug()]);
         }
@@ -92,14 +89,14 @@ class TrickController extends AbstractController
         }
         return $this->render('trick/view_all_tricks.html.twig',['tricks' => $tricks]);
     }
+
     /**
      * @Route("/trick/create", name="app_trick_create")
      * @param Request $request
-     * @param Util $util
-     * @param Uploader $uploader
+     * @param TrickService $trickService
      * @return Response
      */
-    public function create(Request $request, Util $util, Uploader $uploader):Response
+    public function create(Request $request, TrickService $trickService):Response
     {
         $this->denyAccessUnlessGranted('create');
 
@@ -107,15 +104,7 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, null,['action' => 'create']);
         $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
-                $trick = $form->getData();
-                $slug = $util->getSlug($trick->getName());
-                $trick->setSlug($slug);
-                $trick->setUser($this->getUser());
-                $media = $uploader->saveImage($form->get('imgDefault')->getData());
-                $trick->setImgDefault($media);
-                $em->persist($trick);
-                $media->setTrick($trick);
-                $em->flush();
+              $trick = $trickService->create($form);
                 $this->addFlash('success','Le trick a bien été ajouté');
                 return $this->redirectToRoute('app_trick_view',['slug' => $trick->getSlug()]);
             }
@@ -127,17 +116,15 @@ class TrickController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function edit(Trick $trick, Request $request):Response
+    public function edit(Trick $trick, Request $request, TrickService $trickService, EntityManagerInterface $em):Response
     {
         $this->denyAccessUnlessGranted('edit', $trick);
 
-        $em = $this->getDoctrine()->getManager();
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()){
-                $trick = $form->getData();
-                $em->persist($trick);
-                $em->flush();
+                $trickService->edit($form);
                 $this->addFlash('success','Le trick a bien été modifié');
                 return $this->redirectToRoute('app_trick_view',['slug' => $trick->getSlug()]);
             }
@@ -150,16 +137,14 @@ class TrickController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function deleteTrick(Trick $trick, Request $request, EntityManagerInterface $entityManager): Response
+    public function deleteTrick(Trick $trick, Request $request, TrickService $trickService): Response
     {
         $this->denyAccessUnlessGranted('delete', $trick);
 
         $form = $this->createForm(DeleteTrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            $trick = $form->getData();
-            $entityManager->remove($trick);
-            $entityManager->flush();
+            $trickService->delete($form);
             $this->addFlash('success', "Le trick a bien été supprimer !");
             return $this->redirectToRoute('app_trick_view_all');
         }
