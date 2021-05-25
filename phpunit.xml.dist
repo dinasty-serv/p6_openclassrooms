@@ -16,7 +16,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="Snowtrick Test">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
@@ -37,4 +37,10 @@
         <extension class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
     -->
+    <extensions>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+    </extensions>
+    <logging>
+        <log type="coverage-html" target="build/coverage" lowUpperBound="35" highLowerBound="70"/>
+    </logging>
 </phpunit>

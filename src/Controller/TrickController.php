@@ -41,21 +41,19 @@ class TrickController extends AbstractController
         $max = 8;
         $em = $this->getDoctrine()->getManager();
         $tricks = $em->getRepository(Trick::class)->
-
         createQueryBuilder('a')
                 ->setFirstResult(($page*$max)-$max)
                 ->setMaxResults($max)
                 ->orderBy('a.id', 'DESC');
 
         return $this->render('module/trick.html.twig', ['tricks' => $tricks->getQuery()->getResult()]);
-
-
     }
 
     /**
      * @Route("/trick/view/{slug}", name="app_trick_view", requirements={"slug"="[a-zA-Z1-9\-_\/]+"})
      * @param Trick $trick
      * @param Request $request
+     * @param CommentService $commentService
      * @return Response
      */
     public function view(Trick $trick, Request $request, CommentService $commentService):Response
