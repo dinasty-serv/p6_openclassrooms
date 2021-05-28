@@ -7,6 +7,9 @@ namespace App\Tests;
 use App\Entity\Trick;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,16 +17,18 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TricksTest extends WebTestCase
 {
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     */
     public function testEditTrick(){
         $client = static::createClient();
 
-        /** @var UrlGeneratorInterface $urlGenerator */
         $urlGenerator = $client->getContainer()->get("router");
 
-        /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
 
-        /** @var User $user */
         $user = $entityManager->find(User::class, 1);
         $trick = $entityManager->find(Trick::class, 1);
         $client->loginUser($user);
@@ -38,19 +43,19 @@ class TricksTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     * @throws TransactionRequiredException
+     */
     public function testEditTrickUserNotLogin(){
         $client = static::createClient();
 
-        /** @var UrlGeneratorInterface $urlGenerator */
         $urlGenerator = $client->getContainer()->get("router");
 
-        /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
 
-        /** @var User $user */
-        $user = $entityManager->find(User::class, 1);
         $trick = $entityManager->find(Trick::class, 1);
-        //$client->loginUser($user);
 
 
        $client->request(Request::METHOD_GET, $urlGenerator->generate("app_trick_edit",["id" => $trick->getId()]));
@@ -60,16 +65,18 @@ class TricksTest extends WebTestCase
         $this->assertResponseRedirects($urlGenerator->generate("app_login"), Response::HTTP_FOUND);
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     */
     public function testDeleteTrickUserNotOwner(){
         $client = static::createClient();
 
-        /** @var UrlGeneratorInterface $urlGenerator */
         $urlGenerator = $client->getContainer()->get("router");
 
-        /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
 
-        /** @var User $user */
         $user = $entityManager->find(User::class, 1);
         $trick = $entityManager->find(Trick::class, 1);
         $client->loginUser($user);
