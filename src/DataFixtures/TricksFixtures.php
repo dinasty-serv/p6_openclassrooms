@@ -31,7 +31,7 @@ class TricksFixtures extends Fixture implements DependentFixtureInterface
             "Les one foot tricks",
             "Old school"
         ];
-        $limit = 10;
+        $limit = 50;
 
 
 

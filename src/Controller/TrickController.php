@@ -50,7 +50,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/view/{slug}", name="app_trick_view", requirements={"slug"="[a-zA-Z1-9\-_\/]+"})
+     * @Route("/trick/view/{slug}", name="app_trick_view", requirements={"slug"="[a-zA-Z0-9-_/]+"})
      * @param Trick $trick
      * @param Request $request
      * @param CommentService $commentService
@@ -108,10 +108,13 @@ class TrickController extends AbstractController
             }
         return $this->render('trick/create.html.twig',['form' =>$form->createView()]);
     }
+
     /**
      * @Route("/trick/edit/{id}/", name="app_trick_edit", requirements={"id"="\d+"})
      * @param Trick $trick
      * @param Request $request
+     * @param TrickService $trickService
+     * @param EntityManagerInterface $em
      * @return Response
      */
     public function edit(Trick $trick, Request $request, TrickService $trickService, EntityManagerInterface $em):Response

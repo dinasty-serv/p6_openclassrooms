@@ -12,35 +12,9 @@
 
 
         </div>
-        <div class="d-flex justify-content-center mb-2">
-
-            <button id="moreViewsTricks" class="btn btn-primary" >Voir plus</button>
-
-        </div>
+        {% include('module/pagination_tricks.html.twig') %}
 
     </div>
 {% endblock body %}
-{% block javascripts %}
-<script>
-    var page = 1;
 
-    window.onload = function() {
-        $('#moreViewsTricks').click(function(){
-            page ++
-            loadTricks(page);
-        });
-        loadTricks(page);
-    };
-    function loadTricks(page){
-        var areaTricks = $("#trickContent");
-        $.ajax({
-            method: "GET",
-            url: "{{ path('app_load_tricks', {'page': null}) }}/"+page,
-        })
-            .done(function( tricksHtml ) {
-                areaTricks.append(tricksHtml);
-            });
-    }
-</script>
-{% endblock javascripts %}
 

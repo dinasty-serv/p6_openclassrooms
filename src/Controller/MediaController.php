@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MediaController extends AbstractController
 {
     /**
-     * @Route("/trick/{id}/add/media}", name="app_trick_add_medias", requirements={"id"="\d+","media_id"="\d+" })
+     * @Route("/trick/{id}/add/media", name="app_trick_add_medias", requirements={"id"="\d+"})
      * @param Trick $trick
      * @param Request $request
      * @param Uploader $uploader
@@ -111,7 +111,7 @@ class MediaController extends AbstractController
         $this->denyAccessUnlessGranted('edit', $trick);
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(ImgType::class);
+        $form = $this->createForm(ImgType::class, $trick->getImgDefault());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $media =  $uploader->saveImage($form->getData());

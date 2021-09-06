@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Trick;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CommentService
@@ -21,10 +22,10 @@ class CommentService
     }
 
     /**
-     * @param $data
+     * @param Form $data
      * @param Trick $trick
      */
-    public function newComment($data, Trick $trick)
+    public function newComment(Form $data, Trick $trick)
     {
         $comment = $data->getData();
         $comment->setTrick($trick);

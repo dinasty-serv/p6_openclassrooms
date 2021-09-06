@@ -3,7 +3,9 @@
 
 namespace App\Form;
 use App\Entity\Category;
+use App\Entity\Image;
 use App\Entity\Trick;
+use App\Entity\Video;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -33,9 +35,21 @@ class TrickType extends AbstractType
             ]);
 
         if ($options['action'] == "create"){
-            $builder->add('imgDefault', ImgType::class,[
 
-                'mapped' => false
+            $builder->add('images', CollectionType::class,[
+                'entry_type' => ImgType::class,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+
+            ]);
+
+            $builder->add('videos', CollectionType::class,[
+                'entry_type' => VideoType::class,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+
             ]);
         }
 
