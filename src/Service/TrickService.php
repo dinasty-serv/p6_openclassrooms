@@ -60,7 +60,6 @@ class TrickService
                 $trick->setImgDefault($madia);
                 $trick->addImage($madia);
         }
-            dump($trick);
         $this->em->persist($trick);
         $this->em->flush();
 
