@@ -54,10 +54,14 @@ class TrickService
         $slug = $this->util->getSlug($trick->getName());
         $trick->setSlug($slug);
         $trick->setUser($this->user);
-        $media = $this->uploader->saveImage($data->get('imgDefault')->getData());
-        $trick->setImgDefault($media);
+
+            foreach ($data->get('images')->getData() as $image){
+                $madia =  $this->uploader->saveImage($image);
+                $trick->setImgDefault($madia);
+                $trick->addImage($madia);
+        }
+            dump($trick);
         $this->em->persist($trick);
-        $media->setTrick($trick);
         $this->em->flush();
 
         return $trick;

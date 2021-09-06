@@ -20,10 +20,10 @@ class UsersFixtures extends Fixture
 
         $user = new User();
         $user->setUsername('admin');
-        $user->setEmail('nicodu22300@hotmail.fr');
+        $user->setEmail('admin@snowtricks.com');
         $user->setStatus(true);
 
-        $password = $this->encoder->encodePassword($user, '28121995');
+        $password = $this->encoder->encodePassword($user, '0000');
         $user->setPassword($password);
 
         $manager->persist($user);
