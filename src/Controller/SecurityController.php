@@ -10,6 +10,7 @@ use App\Form\ImgType;
 use App\Form\RegisterType;
 use App\Form\ResetPasswordType;
 use App\Service\Uploader;
+use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
 use Swift_Mailer;
 use Swift_Message;
@@ -153,11 +154,12 @@ class SecurityController extends AbstractController
      * @param User $user
      * @param UserPasswordEncoderInterface $encoder
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function resetPassword(User $user, UserPasswordEncoderInterface $encoder, Request $request): Response
+    public function resetPassword(User $user, UserPasswordEncoderInterface $encoder, Request $request, EntityManagerInterface $em): Response
     {
-        $em = $this->getDoctrine()->getManager();
+
         $form = $this->createForm(ResetPasswordType::class);
         $error = '';
         if (!empty($user)) {
@@ -169,7 +171,6 @@ class SecurityController extends AbstractController
                     $user->setPassword($encoded);
                     $user->setResetToken(null);
                     $em->persist($user);
-
                     $em->flush();
                     $this->addFlash(
                         'success',
