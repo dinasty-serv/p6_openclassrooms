@@ -30,16 +30,22 @@ class TrickService
      * @var Util
      */
     private $util;
+    /**
+     * @var Util
+     */
+    private $videoService;
 
     public function __construct(TokenStorageInterface $tokenStorage,
                                 EntityManagerInterface $em,
                                 Uploader $uploader,
-                                Util $util)
+                                Util $util,
+                                VideoService $videoService)
     {
         $this->user = $tokenStorage->getToken()->getUser();
         $this->em = $em;
         $this->uploader = $uploader;
         $this->util = $util;
+        $this->videoService = $videoService;
 
     }
 
@@ -55,11 +61,20 @@ class TrickService
         $trick->setSlug($slug);
         $trick->setUser($this->user);
 
-            foreach ($data->get('images')->getData() as $image){
+        foreach ($data->get('images')->getData() as $image){
                 $madia =  $this->uploader->saveImage($image);
                 $trick->setImgDefault($madia);
                 $trick->addImage($madia);
         }
+
+        foreach ($data->get('videos')->getData() as $video){
+
+            $videoNew = $this->videoService->getUrl($video);
+            $trick->addVideo($videoNew);
+
+        }
+
+
         $this->em->persist($trick);
         $this->em->flush();
 

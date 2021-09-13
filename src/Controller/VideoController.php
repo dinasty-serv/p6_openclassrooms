@@ -47,7 +47,7 @@ class VideoController extends AbstractController
      * @param Trick $trick
      * @param int $video_id
      * @param Request $request
-     * @param CommentService $videoService
+     * @param VideoService $videoService
      * @param EntityManagerInterface $em
      * @return Response
      */
